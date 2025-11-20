@@ -17,7 +17,6 @@ BinPackParameters: false
 BreakBeforeBraces: Attach
 BracedInitializerIndentWidth: 4
 BreakConstructorInitializers: AfterColon
-BreakTemplateDeclarations: Yes
 ColumnLimit: 0
 ContinuationIndentWidth: 4
 Cpp11BracedListStyle: true
