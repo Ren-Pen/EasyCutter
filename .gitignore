@@ -1,6 +1,9 @@
 build/**
 build-*/**
 target/**
+**/compile_commands.json
 
 .idea/**
 .vscode/**
+
+CMakeUserPresets.json

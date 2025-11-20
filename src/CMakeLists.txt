@@ -7,3 +7,7 @@ if(MSVC)
 else()
   target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
+
+find_package(fmt CONFIG REQUIRED)
+
+target_link_libraries(${TARGET_NAME} fmt::fmt)
