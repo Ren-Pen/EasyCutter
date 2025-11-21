@@ -1,26 +1,13 @@
-#include <fmt/core.h>
 #include <wx/wx.h>
+#include "ui/ApplicationFrame.h"
 
-class MyApp : public wxApp
-{
+class MainApp : public wxApp {
 public:
-    virtual bool OnInit() override
-    {
-        fmt::print("Hello World!\n");
-
-        wxFrame* frame = new wxFrame(
-            nullptr,
-            wxID_ANY,
-            wxT("Title"),
-            wxDefaultPosition,
-            wxSize(250, 150)
-        );
-
-        frame->Centre();
+    virtual bool OnInit() override {
+        auto frame = new slimenano::ui::ApplicationFrame(wxT("Easy Cutter"));
         frame->Show(true);
         return true;
     }
 };
 
-wxIMPLEMENT_APP(MyApp);
-
+wxIMPLEMENT_APP(MainApp);

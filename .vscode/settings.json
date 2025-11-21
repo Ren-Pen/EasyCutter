@@ -1,3 +1,9 @@
 {
-    "cmake.copyCompileCommands": "${workspaceFolder}/build/compile_commands.json"
+    "cmake.copyCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "clangd.arguments": [
+        "--header-insertion=never"
+    ],
+    "[cpp]": {
+        "editor.formatOnSave": true
+    },
 }

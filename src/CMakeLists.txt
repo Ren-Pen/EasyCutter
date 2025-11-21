@@ -1,6 +1,10 @@
 set(TARGET_NAME EasyCutter)
 
-add_executable(${TARGET_NAME} WIN32 main.cpp)
+add_executable(${TARGET_NAME} WIN32 
+${CMAKE_CURRENT_LIST_DIR}/main.cpp
+${CMAKE_CURRENT_LIST_DIR}/ui/ApplicationFrame.cpp
+${CMAKE_CURRENT_LIST_DIR}/ui/ApplicationFrame.h
+)
 
 if(MSVC)
   target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
