@@ -1,7 +1,7 @@
 #include <wx/msgdlg.h>
 #include "MainMenuHandler.h"
 
-#include "../../app/IDs.h"
+#include "../IDs.h"
 
 namespace slimenano::ui {
 

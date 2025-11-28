@@ -4,7 +4,7 @@
 #include <wx/translation.h>
 #include <wx/event.h>
 
-#include "../../app/IDs.h"
+#include "../IDs.h"
 #include "MainMenuBar.h"
 
 namespace slimenano::ui {

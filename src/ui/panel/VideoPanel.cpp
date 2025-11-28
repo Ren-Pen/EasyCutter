@@ -1,4 +1,4 @@
-#include "../../app/IDs.h"
+#include "../IDs.h"
 #include "VideoPanel.h"
 
 namespace slimenano::ui {

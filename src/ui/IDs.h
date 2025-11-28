@@ -1,6 +1,6 @@
 
-#ifndef EASY_CUTTER_SRC_APP_IDS_H
-#define EASY_CUTTER_SRC_APP_IDS_H
+#ifndef EASY_CUTTER_SRC_UI_IDS_H
+#define EASY_CUTTER_SRC_UI_IDS_H
 
 #include "wx/defs.h"
 

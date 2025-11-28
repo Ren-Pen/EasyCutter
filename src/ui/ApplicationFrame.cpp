@@ -1,5 +1,5 @@
 
-#include "../app/IDs.h"
+#include "IDs.h"
 #include "ApplicationFrame.h"
 
 namespace slimenano::ui {
