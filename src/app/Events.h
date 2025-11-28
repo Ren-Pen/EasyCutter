@@ -1,0 +1,5 @@
+
+#ifndef EASY_CUTTER_SRC_APP_EVENTS_H
+#define EASY_CUTTER_SRC_APP_EVENTS_H
+
+#endif
