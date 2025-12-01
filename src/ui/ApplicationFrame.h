@@ -6,6 +6,8 @@
 #include "menu/MainMenuBar.h"
 #include "menu/MainMenuHandler.h"
 
+#include "panel/VideoPanel.h"
+
 namespace slimenano::ui {
 
 class ApplicationFrame : public wxFrame {
@@ -13,9 +15,12 @@ public:
     ApplicationFrame(const wxString& title);
     ~ApplicationFrame();
 
+    VideoPanel* GetVideoPanel();
+
 private:
     MainMenuBar* m_pMainMenuBar;
     MainMenuHandler* m_pMainMenuHandler;
+    VideoPanel* m_pVideoPanel;
 };
 
 } // namespace slimenano::ui

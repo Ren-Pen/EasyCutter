@@ -1,8 +1,5 @@
 
-#include <wx/menuitem.h>
-#include <wx/defs.h>
-#include <wx/translation.h>
-#include <wx/event.h>
+#include "../../pch.h" // IWYU pragma: keep
 
 #include "../IDs.h"
 #include "MainMenuBar.h"

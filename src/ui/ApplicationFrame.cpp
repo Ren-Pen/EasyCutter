@@ -1,4 +1,6 @@
 
+#include "../pch.h" // IWYU pragma: keep
+
 #include "IDs.h"
 #include "ApplicationFrame.h"
 
@@ -12,10 +14,21 @@ ApplicationFrame::ApplicationFrame(const wxString& title) :
     SetMenuBar(m_pMainMenuBar);
 
     m_pMainMenuHandler = new MainMenuHandler(this);
+
+    m_pVideoPanel = new VideoPanel(this);
+
+    auto sizer = new wxBoxSizer(wxVERTICAL);
+    sizer->Add(m_pVideoPanel, 1, wxEXPAND | wxALL, 0);
+    SetSizer(sizer);
+    Layout();
 }
 
 ApplicationFrame::~ApplicationFrame() {
     delete m_pMainMenuHandler;
+}
+
+VideoPanel* ApplicationFrame::GetVideoPanel() {
+    return this->m_pVideoPanel;
 }
 
 } // namespace slimenano::ui

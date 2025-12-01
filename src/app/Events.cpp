@@ -1,3 +1,5 @@
+#include "../pch.h" // IWYU pragma: keep
+
 #include "Events.h"
 
 namespace slimenano {
