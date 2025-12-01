@@ -1,6 +1,4 @@
-#include <wx/intl.h>
-#include <wx/app.h>
-#include <wx/translation.h>
+#include "pch.h" // IWYU pragma: keep
 #include "ui/ApplicationFrame.h"
 
 wxLocale g_locale;

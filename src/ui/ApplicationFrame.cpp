@@ -7,7 +7,10 @@
 namespace slimenano::ui {
 
 ApplicationFrame::ApplicationFrame(const wxString& title) :
-    wxFrame(nullptr, ID_FRAME_APPLICATON, title, wxDefaultPosition, wxSize(1280, 720)) {
+    wxFrame(nullptr, ID_FRAME_APPLICATON, title, wxDefaultPosition) {
+
+    SetClientSize(FromDIP(wxSize(1280, 720)));
+
     Centre();
 
     m_pMainMenuBar = new MainMenuBar{this};

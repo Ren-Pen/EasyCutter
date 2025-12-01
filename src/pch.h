@@ -9,6 +9,9 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+#include <wx/intl.h>
+#include <wx/app.h>
+
 #include <wx/defs.h>
 #include <wx/event.h>
 #include <wx/translation.h>
