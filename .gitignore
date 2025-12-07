@@ -8,3 +8,5 @@ target/**
 CMakeUserPresets.json
 
 .cache/**
+
+.vs/**
