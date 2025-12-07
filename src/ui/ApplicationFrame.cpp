@@ -7,7 +7,7 @@
 namespace slimenano::ui {
 
 ApplicationFrame::ApplicationFrame(const wxString& title) :
-    wxFrame(nullptr, ID_FRAME_APPLICATON, title, wxDefaultPosition) {
+    wxFrame(nullptr, ID_FRAME_APPLICATION, title, wxDefaultPosition) {
 
     SetClientSize(FromDIP(wxSize(1280, 720)));
 
