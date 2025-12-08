@@ -10,6 +10,8 @@ add_executable(${TARGET_NAME} WIN32
 "${CMAKE_CURRENT_LIST_DIR}/ui/menu/MainMenuHandler.cpp"
 )
 
+add_subdirectory(media)
+
 if(MSVC)
   target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()

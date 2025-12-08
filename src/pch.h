@@ -2,6 +2,8 @@
 #define EASY_CUTTER_SRC_PCH_H
 
 #include <string>
+#include <vector>
+#include <exception>
 
 extern "C" {
 #include <libavformat/avformat.h>
