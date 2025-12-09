@@ -4,6 +4,11 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include <queue>
+#include <thread>
+#include <mutex>
+#include <memory>
+#include <condition_variable>
 
 extern "C" {
 #include <libavformat/avformat.h>

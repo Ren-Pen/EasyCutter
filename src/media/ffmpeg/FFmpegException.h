@@ -10,6 +10,7 @@ namespace slimenano::media {
 class FFmpegException : public std::exception {
 
 public:
+    FFmpegException(const int errCode);
     FFmpegException(const int errCode, const std::string errMsg);
 
     const std::string& Message() const;
