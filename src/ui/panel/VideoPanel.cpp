@@ -54,8 +54,7 @@ void VideoPanel::OnSize([[maybe_unused]] wxSizeEvent& event) {
 
 void VideoPanel::OnFrameReady(FrameReadyEvent& event) {
     m_bitmap = wxBitmap(event.m_image);
-    Refresh();
-    Update();
+    Refresh(false);
 }
 
 void VideoPanel::OnPaint([[maybe_unused]] wxPaintEvent& event) {
@@ -71,6 +70,8 @@ void VideoPanel::OnPaint([[maybe_unused]] wxPaintEvent& event) {
         const int OffsetY = (Ht - m_bitmap.GetHeight()) / 2;
         dc.DrawBitmap(m_bitmap, OffsetX, OffsetY, false);
     }
+
+    m_overlay = m_baseInfo + wxString::Format("%d\n", m_fps.load());
 
     if (!m_overlay.IsEmpty()) {
         dc.SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
@@ -108,19 +109,6 @@ void VideoPanel::OnOpenVideo([[maybe_unused]] const wxCommandEvent& event) {
 
         auto& pCodecContext = videoDecoder->get().GetCodecContext();
 
-        m_pSwsContext = sws_getContext(
-            pCodecContext.width,
-            pCodecContext.height,
-            pCodecContext.pix_fmt,
-            pCodecContext.width,
-            pCodecContext.height,
-            AV_PIX_FMT_RGB24,
-            SWS_LANCZOS,
-            nullptr,
-            nullptr,
-            nullptr
-        );
-
         videoDecoder->get().SetFrameCallback(std::bind(&VideoPanel::ConvertToBitmap, this, std::placeholders::_1, std::placeholders::_2));
 
         auto fps = av_q2d(videoDecoder->get().avg_frame_rate);
@@ -128,17 +116,17 @@ void VideoPanel::OnOpenVideo([[maybe_unused]] const wxCommandEvent& event) {
             fps = 30.0;
         }
 
-        SetOverlay(
-            wxString::Format(
-                "File: %s\n"
-                "Resolution %d x %d\n"
-                "Fps: %f\n",
-                path,
-                pCodecContext.width,
-                pCodecContext.height,
-                fps
-            )
+        m_baseInfo = wxString::Format(
+            "File: %s\n"
+            "Resolution %d x %d\n"
+            "Fps: ",
+            path,
+            pCodecContext.width,
+            pCodecContext.height
         );
+
+        frames = 0;
+        m_startTime = std::chrono::steady_clock::now();
 
         m_pDemuxer->Play();
     } catch (media::FFmpegException ex) {
@@ -161,42 +149,47 @@ void VideoPanel::ConvertToBitmap(media::FFmpegDecoder& decoder, media::AVFramePt
 
     auto videoRenderSize = m_videoRenderSize.load();
 
-    int Wt = videoRenderSize.width;
-    int Ht = videoRenderSize.height;
-
-    if (Wt == 0 || Ht == 0) {
+    if (videoRenderSize.width == 0 || videoRenderSize.height == 0) {
         return;
     }
 
-    int w = decoder.GetCodecContext().width;
-    int h = decoder.GetCodecContext().height;
+    if (!m_pSwsContext) {
+        m_pSwsContext = sws_getContext(
+            decoder.GetCodecContext().width,
+            decoder.GetCodecContext().height,
+            decoder.GetCodecContext().pix_fmt,
+            videoRenderSize.width,
+            videoRenderSize.height,
+            AV_PIX_FMT_RGB24,
+            SWS_FAST_BILINEAR,
+            nullptr,
+            nullptr,
+            nullptr
+        );
+    }
 
-    wxImage img(w, h);
+    wxImage img(videoRenderSize.width, videoRenderSize.height);
     uint8_t* dest = img.GetData(); // RGB24 buffer
 
     uint8_t* dstSlice[1] = {dest};
-    int dstStride[1] = {w * 3};
+    int dstStride[1] = {img.GetWidth() * 3};
 
     sws_scale(
         m_pSwsContext,
         frame->data,
         frame->linesize,
         0,
-        h,
+        decoder.GetCodecContext().height,
         dstSlice,
         dstStride
     );
 
-    const auto Ws = img.GetWidth();
-    const auto Hs = img.GetHeight();
+    ++frames;
 
-    double Sw = (double)Wt / Ws;
-    double Sh = (double)Ht / Hs;
-    double S = std::min(Sw, Sh);
-    if (std::abs(S - 1) > 1e-6) {
-        const int Wr = static_cast<int>(Ws * S);
-        const int Hr = static_cast<int>(Hs * S);
-        img = img.Scale(Wr, Hr, wxIMAGE_QUALITY_HIGH);
+    auto now = std::chrono::steady_clock::now();
+    double seconds = std::chrono::duration<double>(now - m_startTime).count();
+    if (seconds > 0.0) {
+        m_fps = static_cast<int>(frames / seconds);
     }
 
     FrameReadyEvent event(img);

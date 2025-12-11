@@ -5,6 +5,46 @@
 
 namespace slimenano::media {
 
+static const std::vector<AVHWDeviceType> PriorityList = {
+#if defined(_WIN32)
+    AV_HWDEVICE_TYPE_D3D11VA,
+    AV_HWDEVICE_TYPE_DXVA2,
+    AV_HWDEVICE_TYPE_CUDA,
+#elif defined(__APPLE__)
+    AV_HWDEVICE_TYPE_VIDEOTOOLBOX,
+#else // Linux
+    AV_HWDEVICE_TYPE_CUDA,
+    AV_HWDEVICE_TYPE_VAAPI,
+#endif
+};
+
+std::vector<AVHWDeviceType> getSupportedHW(const AVCodec* codec) {
+    std::vector<AVHWDeviceType> list;
+
+    for (int i = 0;; i++) {
+        const AVCodecHWConfig* config = avcodec_get_hw_config(codec, i);
+        if (!config)
+            break;
+
+        if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX) {
+            list.push_back(config->device_type);
+        }
+    }
+    return list;
+}
+
+AVHWDeviceType selectBestHWDevice(const AVCodec* codec) {
+    auto supported = getSupportedHW(codec);
+
+    for (auto prefer : PriorityList) {
+        if (std::find(supported.begin(), supported.end(), prefer) != supported.end()) {
+            return prefer;
+        }
+    }
+
+    return AV_HWDEVICE_TYPE_NONE;
+}
+
 size_t getSuggestQueueSize(const AVMediaType& mediaType) {
     if (mediaType == AVMEDIA_TYPE_VIDEO) {
         return MAX_VIDEO_QUEUE_SIZE;
@@ -47,6 +87,19 @@ FFmpegDecoder::FFmpegDecoder(unsigned int streamIndex, AVStream* stream) :
         throw FFmpegException(errNum);
     }
 
+    auto deviceType = selectBestHWDevice(codec);
+    AVBufferRef* hwDeviceCtx = nullptr;
+
+    errNum = av_hwdevice_ctx_create(&hwDeviceCtx, deviceType, nullptr, nullptr, 0);
+    if (errNum != 0) {
+        hwDeviceCtx = nullptr;
+    }
+
+    if (hwDeviceCtx) {
+        m_pCodecContext->hw_device_ctx = av_buffer_ref(hwDeviceCtx);
+        av_buffer_unref(&hwDeviceCtx);
+    }
+
     errNum = avcodec_open2(m_pCodecContext.get(), codec, nullptr);
     if (errNum != 0) {
         throw FFmpegException(errNum);
@@ -87,7 +140,7 @@ void FFmpegDecoder::DecodeLoop() {
             if (recvRet == 0) {
                 if (m_frameCallback) {
                     m_frameCallback(*this, std::move(frame));
-                    std::this_thread::sleep_for(std::chrono::duration<double>(0.0333));
+                    // std::this_thread::sleep_for(std::chrono::duration<double>(0.0001));
                 }
             }
         }

@@ -9,13 +9,18 @@
     "cSpell.words": [
         "avcodec",
         "AVERROR",
+        "AVHW",
         "AVMEDIA",
         "codecpar",
         "Demuxer",
+        "DXVA",
         "FONTFAMILY",
         "FONTSTYLE",
         "FONTWEIGHT",
+        "HWDEVICE",
         "LANCZOS",
-        "slimenano"
+        "slimenano",
+        "VAAPI",
+        "VIDEOTOOLBOX"
     ],
 }

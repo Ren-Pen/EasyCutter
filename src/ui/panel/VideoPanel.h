@@ -48,6 +48,11 @@ private:
     std::atomic<VideoRenderSize> m_videoRenderSize;
 
     SwsContext* m_pSwsContext = nullptr;
+
+    std::chrono::steady_clock::time_point m_startTime;
+    long frames = 0;
+    std::atomic<int> m_fps = 0;
+    wxString m_baseInfo;
 };
 
 } // namespace slimenano::ui
