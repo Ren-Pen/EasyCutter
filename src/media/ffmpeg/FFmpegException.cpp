@@ -1,4 +1,4 @@
-#include "../pch.h" // IWYU pragma: keep
+#include "../../pch.h" // IWYU pragma: keep
 
 #include "FFmpegException.h"
 

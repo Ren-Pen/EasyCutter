@@ -9,6 +9,7 @@ struct AVPacket;
 
 namespace slimenano::media {
 class AVPacketDeleter {
+public:
     void operator()(AVPacket* ptr) const;
 };
 

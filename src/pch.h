@@ -1,6 +1,10 @@
 #ifndef EASY_CUTTER_SRC_PCH_H
 #define EASY_CUTTER_SRC_PCH_H
 
+#include <cstdint>
+#include <cstddef>
+#include <cstdlib>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <exception>
@@ -9,6 +13,13 @@
 #include <mutex>
 #include <memory>
 #include <condition_variable>
+#include <functional>
+#include <cassert>
+#include <deque>
+#include <atomic>
+#include <unordered_map>
+#include <chrono>
+#include <optional>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -34,5 +45,7 @@ extern "C" {
 
 #include <wx/msgdlg.h>
 #include <wx/filedlg.h>
+
+#include <wx/brush.h>
 
 #endif

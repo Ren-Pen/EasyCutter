@@ -1,0 +1,9 @@
+
+#ifndef EASY_CUTTER_SRC_MEDIA_FFMPEG_AV_FRAME_PIPLINE_H
+#define EASY_CUTTER_SRC_MEDIA_FFMPEG_AV_FRAME_PIPLINE_H
+
+namespace slimenano::media {
+
+}
+
+#endif

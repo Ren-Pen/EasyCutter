@@ -1,9 +1,12 @@
 #ifndef EASY_CUTTER_SRC_UI_PANEL_VIDEO_PANEL_H
 #define EASY_CUTTER_SRC_UI_PANEL_VIDEO_PANEL_H
 
+#include <atomic>
+
 #include <wx/event.h>
 #include <wx/frame.h>
 #include <wx/panel.h>
+#include "../../media/ffmpeg/decode/FFmpegDemuxer.h"
 
 extern "C" {
 struct AVCodecContext;
@@ -14,6 +17,11 @@ struct SwsContext;
 }
 
 namespace slimenano::ui {
+class FrameReadyEvent;
+struct VideoRenderSize {
+    int width;
+    int height;
+};
 
 class VideoPanel : public wxPanel {
 public:
@@ -22,31 +30,23 @@ public:
     void OnOpenVideo([[maybe_unused]] const wxCommandEvent& event);
 
 protected:
+    void OnSize(wxSizeEvent& event);
     void OnPaint(wxPaintEvent& event);
-    void OnTimer(wxTimerEvent& event);
+    void OnFrameReady(FrameReadyEvent& event);
 
 private:
     void SetOverlay(const wxString& text);
-    void StartTimer(int intervalMs);
-    void StopTimer();
     void CloseVideo();
-    bool DecodeNextFrame();
-    void ConvertToBitmap(AVFrame* frame);
+    void ConvertToBitmap(media::FFmpegDecoder& decoder, media::AVFramePtr frame);
+
+    std::unique_ptr<media::FFmpegDemuxer> m_pDemuxer = nullptr;
 
     wxFrame* m_pParentFrame;
     wxBitmap m_bitmap;
     wxString m_overlay = "Waiting video";
-    wxTimer m_timer;
 
-    AVFormatContext* m_pFormatContext = nullptr;
-    AVCodecContext* m_pCodecContext = nullptr;
-    int m_videoStreamIndex = -1;
-    double m_fps = 0;
-    double m_pts = 0;
-    double m_timeBase = 0;
-    double m_startClock = 0;
-    AVPacket* m_pPacket = nullptr;
-    AVFrame* m_pFrame = nullptr;
+    std::atomic<VideoRenderSize> m_videoRenderSize;
+
     SwsContext* m_pSwsContext = nullptr;
 };
 

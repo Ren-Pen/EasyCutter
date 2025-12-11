@@ -6,4 +6,16 @@
     "[cpp]": {
         "editor.formatOnSave": true
     },
+    "cSpell.words": [
+        "avcodec",
+        "AVERROR",
+        "AVMEDIA",
+        "codecpar",
+        "Demuxer",
+        "FONTFAMILY",
+        "FONTSTYLE",
+        "FONTWEIGHT",
+        "LANCZOS",
+        "slimenano"
+    ],
 }

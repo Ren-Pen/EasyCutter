@@ -2,15 +2,13 @@
 #define EASY_CUTTER_SRC_MEDIA_FFMPEG_DEMUXER_H
 
 #include <string>
-#include <vector>
-#include <queue>
+#include <memory>
+#include <unordered_map>
 #include <thread>
-#include <mutex>
 #include <atomic>
-#include <condition_variable>
 
-#include "../utils/FFmpegAVPacket.h"
 #include "FFmpegDecoder.h"
+#include "../utils/FFmpegAVFrame.h"
 
 extern "C" {
 struct AVFormatContext;
@@ -19,28 +17,36 @@ struct AVFormatContext;
 namespace slimenano::media {
 
 class FFmpegDemuxer {
-
 public:
     FFmpegDemuxer(const std::string url);
     ~FFmpegDemuxer();
+
+    FFmpegDecoder::Ref GetActivityVideoDecoder();
+    FFmpegDecoder::Ref GetActivityAudioDecoder();
+    FFmpegDecoder::Ref GetActivitySubtitleDecoder();
+    void Play();
 
 protected:
     void DemuxerLoop();
 
 private:
+    bool IsActivatedDecoder(unsigned int streamIndex);
+
+private:
     const std::string m_url;
 
     std::thread m_demuxerThread;
-    std::vector<FFmpegDecoder> m_decoders;
-    std::queue<AVPacketPtr> m_packetQueue;
+    std::unordered_map<unsigned int, std::unique_ptr<FFmpegDecoder>> m_decoders;
+
+    unsigned int m_activityVideoDecoder = 0xFFFFFFFF;
+    unsigned int m_activityAudioDecoder = 0xFFFFFFFF;
+    unsigned int m_activitySubtitleDecoder = 0xFFFFFFFF;
+
+    std::mutex m_decoderMutex;
 
     std::atomic<bool> m_isStopped = false;
-    std::atomic<bool> m_isPaused = false;
-    std::mutex m_pauseMutex;
-    std::condition_variable m_pauseCond;
 
     AVFormatContext* m_pFormatContext = nullptr;
-    AVPacketPtr m_pPacket = nullptr;
 };
 
 } // namespace slimenano::media
